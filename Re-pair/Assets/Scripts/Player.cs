@@ -4,27 +4,39 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    // Start is called before the first frame update
-
-
     Rigidbody2D rb;
-    public float speed = 5f;
+    //Floats
+    public float speed = 6f;
+    public float jump = 10;
+    private  float moveInputX;
+    //Bools
+    private bool isGrounded;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
     }
 
-    // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
-        if (Input.GetKey(KeyCode.D))
+        //Man får ett värde som multipliseras med "speed" för att bestämma velocity;
+        moveInputX = Input.GetAxisRaw("Horizontal");
+        rb.velocity = new Vector2(moveInputX * speed, rb.velocity.y);
+
+        if(Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
-            rb.velocity = new Vector2(speed, rb.velocity.y);
+            rb.velocity = new Vector2(rb.velocity.x, jump);
         }
-        if (Input.GetKey(KeyCode.A))
-        {
-            rb.velocity = new Vector2(-speed, rb.velocity.y);
-        }
+    
+    }
+    public void OnCollisionEnter2D(Collision2D col)
+    {
+        isGrounded = true;
+    }
+    public void OnCollisionExit2D(Collision2D col)
+    {
+        isGrounded = false;
     }
 }
+
+
